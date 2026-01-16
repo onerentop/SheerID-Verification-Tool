@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv
+env
+*.egg-info
+.eggs
+dist
+build
+
+# Local files
+.env
+*.log
+stats.json
+*.tmp
+
+# Documentation (not needed in image)
+docs/
+*.md
+!README.md
+
+# Deprecated
+_deprecated_auto-verify-tool/
+
+# Chrome extensions (not needed for CLI)
+veterans-extension/
+veterans-autofill/
+
+# Claude/Spec files
+.claude/
+.spec-workflow/
+CLAUDE.md
+AGENTS.md
+DEPLOYMENT.md
+
+# GitHub
+.github/
+
+# Web
+index.html
+
+# OS
+.DS_Store
+Thumbs.db
+%USERPROFILE%/

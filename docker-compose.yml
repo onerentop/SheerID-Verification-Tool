@@ -1,0 +1,164 @@
+# SheerID Verification Tool - Docker Compose
+# 支持多种运行模式
+
+services:
+  # ============ 交互式运行 ============
+  # 使用: docker compose run --rm verify <tool> <url>
+  verify:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    container_name: sheerid-verify
+    stdin_open: true
+    tty: true
+    environment:
+      - PROXY=${PROXY:-}
+      - TOOL=${TOOL:-one}
+    # 挂载 stats.json 以持久化统计数据
+    volumes:
+      - ./data:/app/data:rw
+    networks:
+      - sheerid-net
+
+  # ============ Spotify 验证 ============
+  spotify:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "spotify"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ YouTube 验证 ============
+  youtube:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "youtube"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ Google One/Gemini 验证 ============
+  one:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "one"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ Bolt.new 教师验证 ============
+  boltnew:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "boltnew"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ K-12 教师验证 ============
+  k12:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "k12"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ 军人验证 ============
+  veterans:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "veterans"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ Perplexity 验证 ============
+  perplexity:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "perplexity"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ Canva 教师验证 ============
+  canva:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sheerid-tool:latest
+    environment:
+      - PROXY=${PROXY:-}
+    entrypoint: ["/app/entrypoint.sh", "canva"]
+    stdin_open: true
+    tty: true
+    networks:
+      - sheerid-net
+
+  # ============ Telegram Bot ============
+  # 使用: docker compose up -d telegram-bot
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: telegram-bot/Dockerfile
+    image: sheerid-telegram-bot:latest
+    container_name: sheerid-telegram-bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - PROXY=${PROXY:-}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      # 持久化统计数据
+      - ./spotify-verify-tool/stats.json:/app/spotify-verify-tool/stats.json:rw
+      - ./youtube-verify-tool/stats.json:/app/youtube-verify-tool/stats.json:rw
+      - ./one-verify-tool/stats.json:/app/one-verify-tool/stats.json:rw
+      - ./boltnew-verify-tool/stats.json:/app/boltnew-verify-tool/stats.json:rw
+      - ./k12-verify-tool/stats.json:/app/k12-verify-tool/stats.json:rw
+      - ./veterans-verify-tool/stats.json:/app/veterans-verify-tool/stats.json:rw
+      - ./perplexity-verify-tool/stats.json:/app/perplexity-verify-tool/stats.json:rw
+      - ./canva-teacher-tool/stats.json:/app/canva-teacher-tool/stats.json:rw
+    networks:
+      - sheerid-net
+
+networks:
+  sheerid-net:
+    driver: bridge
