@@ -27,9 +27,10 @@ A comprehensive collection of tools for automating SheerID verification workflow
 | Tool | Type | Description |
 |------|------|-------------|
 | [RoxyBrowser](https://roxybrowser.com?code=01045PFA) | 🦊 Browser | **Anti-detect browser** — Safely manage multiple verified accounts without getting banned |
-| [SheerID Auto Verify](https://ip123.in/sheerid/?code=01045PFA) | 🔐 Web | **Auto verification tool** — Fast automated SheerID verification |
+| [Check IP](https://ip123.in/en?code=01045PFA) | 🌐 Web | **Check IP** — Check your IP address and proxy status |
 | [SheerID Verification Bot](https://t.me/SheerID_Verification_bot?start=ref_LdPKPES3Ej) | 🤖 Bot | Automated Telegram verification bot |
-| [GPT Bot](https://t.me/vgptplusbot?start=ref_7762497789) | 🤖 Bot | Automated verification bot |
+| [Gmail Farmer Bot](https://t.me/GmailFarmerBot?start=7762497789) | 🤖 Bot | Create Gmail accounts automatically |
+| [GitHub Bot](https://t.me/AutoGHS_Bot?start=7762497789) | 🤖 Bot | Auto GitHub Stars & engagement service |
 | [Student Card Generator](https://thanhnguyxn.github.io/student-card-generator/) | 🎓 Tool | Create student cards for manual verification |
 | [Payslip Generator](https://thanhnguyxn.github.io/payslip-generator/) | 💰 Tool | Generate payslips for teacher verification |
 
@@ -74,9 +75,21 @@ All tools now include `anti_detect.py` which provides:
 - **Random User-Agents**: 10+ real browser UA strings (Chrome, Firefox, Edge, Safari)
 - **Browser-like Headers**: Proper `sec-ch-ua`, `Accept-Language`, etc.
 - **TLS Fingerprint Spoofing**: Uses `curl_cffi` to impersonate Chrome's JA3/JA4 fingerprint
-- **Random Delays**: Avoids rate limiting with randomized request timing
+- **Random Delays**: Gamma distribution timing to mimic human behavior
 - **Smart Session**: Auto-selects best available HTTP library (curl_cffi > cloudscraper > httpx > requests)
 - **NewRelic Headers**: Required tracking headers for SheerID API calls
+- **Session Warming**: Pre-verification requests to establish legitimate browser session
+- **Email Generation**: Creates realistic student emails matching university domains
+- **Proxy Geo-Matching**: Matches proxy location to university country for consistency
+- **Multi-Browser Impersonation**: Rotates between Chrome, Edge, and Safari fingerprints
+
+#### 📄 Document Generation Module
+New `doc_generator.py` provides anti-detection for generated documents:
+- **Noise Injection**: Random pixel noise to avoid template detection
+- **Color Variation**: 6 different color schemes for uniqueness
+- **Dynamic Positioning**: ±3px variance on element positions
+- **Multiple Types**: Student ID, Transcript, Teacher Badge
+- **Realistic Details**: Random barcodes, QR codes, course grades
 
 > [!WARNING]
 > **API-Based Tools Have Inherent Limitations**
@@ -88,6 +101,11 @@ All tools now include `anti_detect.py` which provides:
 >
 > For best results: Use **residential proxies** + install `curl_cffi` for TLS spoofing.
 > Browser extensions generally have higher success rates than API tools.
+
+> [!IMPORTANT]
+> **Gemini/Google One is US-ONLY (since Jan 2026)**
+>
+> The `one-verify-tool` only works with US IPs. International users will see verification failures.
 
 ---
 
@@ -110,18 +128,69 @@ All tools now include `anti_detect.py` which provides:
     pip install httpx Pillow
     ```
 
-3.  **[Optional] Enhanced Anti-Detection:**
+3.  **🚨 REQUIRED: TLS Fingerprint Spoofing:**
     ```bash
-    pip install curl_cffi cloudscraper
+    pip install curl_cffi
     ```
-    - `curl_cffi`: Spoofs TLS fingerprint (JA3/JA4) to look like real Chrome
-    - `cloudscraper`: Bypasses Cloudflare protection
+    > ⚠️ **Without `curl_cffi`, success rate drops from ~60-80% to ~5-20%!**
+    > SheerID detects Python's TLS fingerprint and will reject most requests.
 
-4.  **Run a tool (e.g., Spotify):**
+4.  **[Optional] Cloudflare Bypass:**
+    ```bash
+    pip install cloudscraper
+    ```
+
+4.  **[Optional] Cloudflare Bypass:**
+    ```bash
+    pip install cloudscraper
+    ```
+
+5.  **Run a tool (e.g., Spotify):**
     ```bash
     cd spotify-verify-tool
     python main.py "YOUR_SHEERID_URL"
     ```
+
+---
+
+## 🔧 Troubleshooting: `fraudRulesReject` Error
+
+This is the **#1 issue** users face. SheerID's fraud detection blocked your request.
+
+### Why It Happens
+
+| Cause | Description |
+|-------|-------------|
+| **TLS Fingerprint** | Python's HTTP libraries have detectable signatures |
+| **Datacenter IP** | VPN/datacenter IPs are often blacklisted |
+| **Request Frequency** | Too many requests from same IP |
+| **Data Patterns** | Generated data looks automated |
+
+### Solutions (in order of importance)
+
+| Priority | Solution | Command/Action |
+|----------|----------|----------------|
+| 🔴 **CRITICAL** | Install `curl_cffi` | `pip install curl_cffi` |
+| 🟠 **HIGH** | Use residential proxy | `--proxy http://user:pass@residential-ip:port` |
+| 🟡 **MEDIUM** | Wait before retry | Wait 24-48 hours between attempts |
+| 🟢 **LOW** | Try different university | Tool auto-rotates, or specify manually |
+| 🟢 **LOW** | Rotate fingerprint | Each attempt generates new fingerprint |
+
+### Quick Fix Checklist
+
+```bash
+# 1. Install curl_cffi (REQUIRED!)
+pip install curl_cffi
+
+# 2. Verify it's working
+python -c "from curl_cffi import requests; print('✅ curl_cffi OK')"
+
+# 3. Run with residential proxy
+python main.py "URL" --proxy http://user:pass@residential.proxy.com:8080
+```
+
+> [!TIP]
+> If you don't have a residential proxy, try [RoxyBrowser](https://roxybrowser.com?code=01045PFA) which provides anti-detect browser with residential IPs.
 
 ---
 
